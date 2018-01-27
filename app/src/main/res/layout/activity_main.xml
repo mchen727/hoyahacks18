@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -16,13 +17,21 @@
         android:text="temp data"
         android:id="@+id/data" />
 
-    <Button
-        android:text="Button"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        android:layout_marginBottom="37dp"
+        android:id="@+id/imageButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="39dp"
-        android:id="@+id/temp_button"
-        android:onClick="startFoodList (MainActivity)" />
-</RelativeLayout>
+        android:visibility="visible"
+        android:onClick="startFoodList (MainActivity)"
+        android:elevation="24dp" />
+
+    <TextureView
+        android:id="@+id/texture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>

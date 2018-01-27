@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
     defaultConfig {
         applicationId "mjs.dev.com.menu"
-        minSdkVersion 11
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -35,4 +35,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }
