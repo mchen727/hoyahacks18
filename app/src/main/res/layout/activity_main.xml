@@ -15,4 +15,14 @@
         android:layout_height="wrap_content"
         android:text="temp data"
         android:id="@+id/data" />
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:id="@+id/temp_button"
+        android:onClick="startFoodList (MainActivity)" />
 </RelativeLayout>

@@ -1,9 +1,12 @@
 package mjs.dev.com.menu;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -24,26 +27,35 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.FOODLIST";
+
     private Vision vision;
     private String parsedData;
+    private Button button;
 
+    private String [] foodlist;
+    public String [] temp_data = {"apple","banana", "cherry", "dates","apple","banana", "cherry", "dates","apple","banana", "cherry", "dates"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Vision.Builder visionBuilder = new Vision.Builder(
-                new NetHttpTransport(),
-                new AndroidJsonFactory(),
-                null);
-
-        visionBuilder.setVisionRequestInitializer(
-                new VisionRequestInitializer("AIzaSyDiuvPzrL4c0Xip3JIhafbd4bSA255y0XU"));
+        Vision.Builder visionBuilder = new Vision.Builder(new NetHttpTransport(),new AndroidJsonFactory(),null);
+        visionBuilder.setVisionRequestInitializer(new VisionRequestInitializer("AIzaSyDiuvPzrL4c0Xip3JIhafbd4bSA255y0XU"));
 
         vision = visionBuilder.build();
 
-        readMenu();
+        //listen to the camera button click to read menu and then transfer to foodlist
+        //readMenu();
+
+        button = (Button) findViewById(R.id.temp_button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                startFoodList(arg0);
+            }
+        });
     }
 
     private void readMenu() {
@@ -79,13 +91,6 @@ public class MainActivity extends AppCompatActivity {
                     TextView helloTextView = (TextView) findViewById(R.id.data);
                     helloTextView.setText(parsedData);
 
-                 /*   runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    text.getText(), Toast.LENGTH_LONG).show();
-                        }
-                    });*/
 
                 } catch (Exception e) {
                     Log.d("ERROR", e.getMessage());
@@ -94,5 +99,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void startFoodList(View view){
 
+        Intent intent = new Intent(this, FoodList.class);
+        foodlist = temp_data;
+        intent.putExtra(EXTRA_MESSAGE, foodlist);
+
+        startActivity(intent);
+    }
 }
