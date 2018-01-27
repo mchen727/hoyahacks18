@@ -61,12 +61,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Menu";
-    public static final String EXTRA_MESSAGE = "mjs.dev.com.FOODLIST";
+    public static final String EXTRA_MESSAGE = "mjs.dev.com.MESSAGE";
 
     private Vision vision;
     private String parsedData;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
-    private String[] foodlist;
+    private String[] foodList;
     public String[] temp_data = {"apple", "banana", "cherry", "dates", "apple", "banana", "cherry", "dates", "apple", "banana", "cherry", "dates"};
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -124,11 +125,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
-
-                // readMenu();
-
-                startFoodList(v);
+               onClickFunc(v);
             }
         });
 
@@ -188,6 +185,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public  void onClickFunc(View v){
+        System.out.println("Taking pic");
+        takePicture(v);
+        System.out.println("REading Menu");
+
+        System.out.println("Sending Data");
+
+    }
+
     protected void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
@@ -205,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void takePicture() {
+    protected void takePicture(View v) {
         if (null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null");
             return;
@@ -293,6 +299,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
+        readMenu(v);
     }
 
     protected void createCameraPreview() {
@@ -394,15 +402,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        super.onPause();
         Log.e(TAG, "onPause");
         //closeCamera();
         stopBackgroundThread();
-        super.onPause();
+
     }
 
 
-
-    private void readMenu() {
+    private void readMenu(View v) {
 
         AsyncTask.execute(new Runnable() {
             @Override
@@ -432,6 +440,36 @@ public class MainActivity extends AppCompatActivity {
 
                     parsedData = text.getText();
 
+                    //temp solution
+                    String filter = "ResturantCategory";
+
+                    String[] arr = parsedData.split("\n");
+                    String[] toReturn = new String[arr.length];
+                    int ctr = 0;
+                    for (int i = 0; i < arr.length; i++) {
+                        String cur = arr[i];
+                        String toBuild = "";
+
+                        for (int k = 0; k < cur.length(); k++) {
+                            char cur_char = cur.charAt(k);
+                            String value = Character.toString(cur_char);
+                            if (cur_char == ' ' || Pattern.matches("[a-zA-Z]+", value) == true) {
+                                toBuild += value;
+                            }
+                        }
+                        if (Pattern.matches("[a-zA-Z]+", toBuild) == false || (filter.contains(toBuild) == true)) {
+                            ctr++;
+                        } else {
+                            toReturn[i - ctr] = toBuild;
+                        }
+                    }
+                    System.out.println( "tasdfasdfadfasdfasdfesting");
+                    System.out.println(toReturn + "testing");
+                    //Log.i("is null?"+(foodList==null),"error");
+                   foodList = new String[toReturn.length - ctr];
+                    for (int i = 0; i < foodList.length; i++)
+                        foodList[i] = toReturn[i];
+
                     TextView helloTextView = (TextView) findViewById(R.id.data);
                     helloTextView.setText(parsedData);
 
@@ -441,15 +479,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        startFoodList(v);
     }
 
-    public void startFoodList(View view) {
+    private void startFoodList(View view) {
 
         Intent intent = new Intent(this, FoodList.class);
-        foodlist = temp_data;
-        intent.putExtra(EXTRA_MESSAGE, foodlist);
 
-        startActivity(intent);
+        System.out.println("Starting" + foodList);
+        if(foodList != null) {
+            intent.putExtra(EXTRA_MESSAGE, foodList);
+
+            startActivity(intent);
+        }
     }
 
     /**

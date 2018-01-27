@@ -3,6 +3,7 @@ package mjs.dev.com.menu;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,9 +23,15 @@ public class FoodList extends AppCompatActivity {
         setContentView(R.layout.activity_food_list);
 
         data = new ArrayList<String>();
-
+        String [] message = null;
+ try {
         Intent intent = getIntent();
-        String [] message = intent.getStringArrayExtra(MainActivity.EXTRA_MESSAGE);
+     message = intent.getStringArrayExtra(MainActivity.EXTRA_MESSAGE);
+
+
+}catch(Exception e){
+    Log.d("ERROR" + (message==null), e.getMessage());
+}
 
         for(String s: message){
             data.add(s);
